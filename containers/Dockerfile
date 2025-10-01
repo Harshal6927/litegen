@@ -36,9 +36,9 @@ RUN uv sync --no-dev --frozen --no-install-project --no-editable
 
 # Build frontend
 COPY src ./src
-RUN uvx nodeenv --quiet /opt/nodeenv/
+RUN uvx nodeenv --quiet --node=22.18.0 /opt/nodeenv/
 ENV PATH="/opt/nodeenv/bin:$PATH"
-RUN cd src/frontend && npm ci --ignore-scripts --no-fund
+RUN cd src/frontend && npm ci --no-fund
 RUN cd src/frontend && npm run build
 
 # # Build python package
