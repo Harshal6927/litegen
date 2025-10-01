@@ -1,0 +1,281 @@
+{
+    "info": {
+        "title": "Litegen",
+        "version": "dev"
+    },
+    "openapi": "3.1.0",
+    "servers": [
+        {
+            "url": "/"
+        }
+    ],
+    "paths": {
+        "/api/crawl": {
+            "get": {
+                "tags": [
+                    "Crawl"
+                ],
+                "summary": "ListCrawls",
+                "operationId": "ApiCrawlListCrawls",
+                "parameters": [
+                    {
+                        "name": "term",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": ""
+                        },
+                        "required": false,
+                        "deprecated": false,
+                        "allowEmptyValue": false,
+                        "allowReserved": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request fulfilled, document follows",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetCrawl"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request syntax or unsupported method",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "extra": {
+                                            "additionalProperties": {},
+                                            "type": [
+                                                "null",
+                                                "object",
+                                                "array"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object",
+                                    "required": [
+                                        "detail",
+                                        "status_code"
+                                    ],
+                                    "description": "Validation Exception",
+                                    "examples": [
+                                        {
+                                            "status_code": 400,
+                                            "detail": "Bad Request",
+                                            "extra": {}
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "Crawl"
+                ],
+                "summary": "CreateCrawl",
+                "operationId": "ApiCrawlCreateCrawl",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostCrawl"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Document created, URL follows",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Crawl"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request syntax or unsupported method",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer"
+                                        },
+                                        "detail": {
+                                            "type": "string"
+                                        },
+                                        "extra": {
+                                            "additionalProperties": {},
+                                            "type": [
+                                                "null",
+                                                "object",
+                                                "array"
+                                            ]
+                                        }
+                                    },
+                                    "type": "object",
+                                    "required": [
+                                        "detail",
+                                        "status_code"
+                                    ],
+                                    "description": "Validation Exception",
+                                    "examples": [
+                                        {
+                                            "status_code": 400,
+                                            "detail": "Bad Request",
+                                            "extra": {}
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Crawl": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "website_url": {
+                        "type": "string"
+                    },
+                    "url_filters": {
+                        "oneOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "pages": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "meta": {
+                        "type": "object"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "llms": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "llms_full": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "created_at",
+                    "id",
+                    "meta",
+                    "pages",
+                    "status",
+                    "updated_at",
+                    "website_url"
+                ],
+                "title": "Crawl"
+            },
+            "GetCrawl": {
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "crawls": {
+                        "items": {
+                            "$ref": "#/components/schemas/Crawl"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "count",
+                    "crawls"
+                ],
+                "title": "GetCrawl"
+            },
+            "PostCrawl": {
+                "properties": {
+                    "website_url": {
+                        "type": "string"
+                    },
+                    "gemini_api_key": {
+                        "type": "string"
+                    },
+                    "url_filters": {
+                        "oneOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "gemini_api_key",
+                    "website_url"
+                ],
+                "title": "PostCrawl"
+            }
+        }
+    }
+}
