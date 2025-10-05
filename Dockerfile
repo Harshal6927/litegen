@@ -67,18 +67,14 @@ WORKDIR /workspace/app
 COPY --from=builder /workspace/app/.venv ./.venv
 COPY --from=builder /workspace/app/src/backend ./src/backend
 COPY migrations ./migrations
-COPY containers/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
 
 RUN addgroup --system --gid 65532 nonroot \
     && adduser --system --uid 65532 --ingroup nonroot --home /home/nonroot nonroot \
     && mkdir -p /home/nonroot/.crawl4ai \
     && chown -R nonroot:nonroot /workspace \
-    && chown -R nonroot:nonroot /home/nonroot \
-    && chown nonroot:nonroot ./entrypoint.sh
+    && chown -R nonroot:nonroot /home/nonroot
 USER nonroot
 STOPSIGNAL SIGINT
 EXPOSE 8000
 
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["tini", "--", "litestar", "run", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "litestar database upgrade --no-prompt && playwright install chromium && exec tini -- litestar run --host 0.0.0.0 --port 8000"]
